@@ -4,43 +4,45 @@ class Analysis():
         self.asset_df = asset_df
         self.dates = dates
         self.mov_avg_status = {}
+        self.twenty_five_days = []
+        self.fifty_days = []
+        self.hundred_days = []
         self.long_term = False
         self.med_term = False
         self.short_term = False
         
     def get_position(self, date):
-        pos=-1
+        position = -1
         for day in self.asset_df.index:
-            pos+=1
+            position += 1
             if date in str(day):
                 break
-        return pos
+        return position
             
     def moving_avgs(self):
         
-        ma_list = []
+        ma_status = []
         
         for date in pd.date_range(self.dates[0], self.dates[1]):
             
-            b_list = []
+            price_above_ma = []
                                           
             for mov_avg in ['MA', 'MA.1', '10', '50', '200']:
                 
-                b_list.append(self.asset_df.loc[date]['close'] > self.asset_df.loc[date][mov_avg])
+                price_above_ma.append(self.asset_df.loc[date]['close'] > self.asset_df.loc[date][mov_avg])
             
-            ma_list.append(b_list)
+            ma_status.append(price_above_ma)
         
-        df = pd.DataFrame(np.array(ma_list))
+        df = pd.DataFrame(np.array(price_above_ma))
         
-        ma_rat = []
+        ma_ratios = []
         
         for i in range(df.shape[1]):
             
             ratio = df[df[i]==True].count()/df.shape[0]
             
-            ma_rat.append(ratio)
+            ma_ratios.append(ratio)
         
-        print(ma_rat)
         
      def trend_analysis(self):
     
