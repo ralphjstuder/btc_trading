@@ -8,11 +8,11 @@ class Analysis():
         self.med_term = False
         self.short_term = False
         
-    def get_position(date):
+    def get_position(self, date):
         pos=-1
-        for i in self.asset_df.index:
-            count+=1
-            if dates[0] in str(i):
+        for day in self.asset_df.index:
+            pos+=1
+            if date in str(day):
                 break
         return pos
             
@@ -42,15 +42,23 @@ class Analysis():
         
         print(ma_rat)
         
-    def trend_analysis(self):
-        try: 
-            for date in pd.date_range(coinbase_btc.index[get_position(dt)-50], coinbase_btc.index[get_position(dt)]):
-                
+     def trend_analysis(self):
+    
+        for date in pd.date_range(self.asset_df.index[self.get_position(self.dates[0])-100], 
+                                  self.asset_df.index[self.get_position(self.dates[0])]):
             
-        except:
-            IndexError
-            pass
-        
-        try
+            self.hundred_days.append(self.asset_df.loc[str(date).split(' ')[0]]['close'])
+
+        for date in pd.date_range(self.asset_df.index[self.get_position(self.dates[0])-50], 
+                                  self.asset_df.index[self.get_position(self.dates[0])]):
+            
+            self.fifty_days.append(self.asset_df.loc[str(date).split(' ')[0]]['close'])
+
+        for date in pd.date_range(self.asset_df.index[self.get_position(self.dates[0])-25], 
+                                  self.asset_df.index[self.get_position(self.dates[0])]):
+            
+            self.twenty_five_days.append(self.asset_df.loc[str(date).split(' ')[0]]['close'])
+    
+        return self.fifty_days, self.hundred_days, self.twenty_five_days
     
     def trend_strength(self):
