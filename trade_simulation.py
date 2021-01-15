@@ -17,86 +17,48 @@ class Trades():
         self.trade_value = (dollar_amount/33000) * leverage
         self.returns = {}
     
-    def past_trade_analysis(self):
-        
+    def past_trade(self):
         new_df = self.asset.loc[self.trade_date:]
-        
-        if self.direction == 'buy':
-            
+        # Deterrmine if a buy hits stop loss or take profit mark return profit or loss amount
+        if self.direction == 'buy': 
             if new_df[new_df['low'] <= self.stop_loss].shape[0] == 0 and new_df[new_df['high'] >= self.take_prof].shape[0] == 0:
-                
                 self.trade_active = True
-                
             elif new_df[new_df['low'] <= self.stop_loss].shape[0] > 0 and new_df[new_df['high'] >= self.take_prof].shape[0] == 0:
-                
                 self.returns['loss'] = int((self.pos_price - self.stop_loss) * self.trade_value)
-                
                 return self.returns
-                
             elif new_df[new_df['low'] <= self.stop_loss].shape[0] == 0 and new_df[new_df['high'] >= self.take_prof].shape[0] > 0:
-                
                 self.returns['profit']= int((self.take_prof - self.pos_price) * self.trade_value)
-                
                 return self.returns
-                
             else:
                 sell_trigger_date = new_df[new_df['low'] <= self.stop_loss].index[0]
                 buy_trigger_date = new_df[new_df['high'] >= self.take_prof].index[0]
-            
                 if sell_trigger_date < buy_trigger_date:
-                    
                     self.returns['loss'] = int((self.pos_price - self.stop_loss) * self.trade_value)
-                    
                     return self.returns
-            
                 elif buy_trigger_date < sell_trigger_date:
-                    
                     self.returns['profit']= int((self.take_prof - self.pos_price) * self.trade_value)
-                    
                     return self.returns
-                    
                 elif sell_trigger_date == buy_trigger_date:
-                    
-                    print(sell_trigger_date)
-                    
-                    print('Smaller price data timeframe required!')
-                
-                
-                  
+                    raise ValueError('Not enough data')
+        
+        # Deterrmine if a sell hits stop loss or take profit mark return profit or loss amount
         if self.direction == 'sell':
-            
             if new_df[new_df['high'] >= self.stop_loss].shape[0] == 0 and new_df[new_df['low'] <= self.take_prof].shape[0] == 0:
-                
                 self.trade_active = True
-                
             elif new_df[new_df['high'] >= self.stop_loss].shape[0] > 0 and new_df[new_df['low'] <= self.take_prof].shape[0] == 0:
-                
                 self.returns['loss'] = int((self.pos_price - self.stop_loss) * self.trade_value)
-                
                 return self.returns
-                
             elif new_df[new_df['high'] >= self.stop_loss].shape[0] == 0 and new_df[new_df['low'] <= self.take_prof].shape[0] > 0:
-                
                 self.returns['profit']= int((self.take_prof - self.pos_price) * self.trade_value)
-                
                 return self.returns
-                
             else:
                 sell_trigger_date = new_df[new_df['High'] >= self.stop_loss].index[0]
                 buy_trigger_date = new_df[new_df['Low'] <= self.take_prof].index[0]
-            
-                if sell_trigger_date < buy_trigger_date:
-                    
+                if sell_trigger_date < buy_trigger_date:   
                     self.returns['loss'] = int((self.pos_price - self.stop_loss) * self.trade_value)
-                    
                     return self.returns
-            
                 elif buy_trigger_date < sell_trigger_date:
-                    
                     self.returns['profit']= int((self.pos_price - self.take_prof) * self.trade_value)
-                    
                     return self.returns
-                    
                 elif sell_trigger_date == buy_trigger_date:
-                    
-                    print('Smaller price data timeframe required!')
+                    raise ValueError('Not enough data')
