@@ -1,4 +1,5 @@
 class AssetData():
+    """ Uses data from Tradingview """
     
     def __init__(self, filename):
         self.filename = filename
@@ -10,5 +11,5 @@ class AssetData():
         self.data_frame.set_index('date', inplace=True)
         self.data_frame.drop('time', axis=1, inplace=True)
         
-        return self.data_frame
+        return self
         
