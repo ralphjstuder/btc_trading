@@ -4,6 +4,7 @@ class AssetData():
     def __init__(self, filename):
         self.filename = filename
         self.data_frame = pd.read_csv(filename)
+        self.clean()
         
     def clean(self):
         self.data_frame.fillna(method='backfill', inplace=True)
